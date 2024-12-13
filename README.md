@@ -70,10 +70,6 @@ INSTALLED_APPS = [
     'persons'
 ]
 ```
-8. Run the migrate command:
-```
-python3 manage.py migrate
-```
 7. create a model, navigate to the models.py file in the /persons/ folder.
 
 myapp/persons/models.py:
@@ -86,43 +82,7 @@ class Person(models.Model):
     email = models.CharField(max_length=255)
     jobTitle = models.CharField(max_length=255)
 ```
-10. open a Python shell, type this command:
-```
-python3 manage.py shell
-```
-11. At the bottom, after the three >>> write the following:
-```
->>> from persons.models import Person
-```
-10. Hit [enter] and write this to look at the empty Member table:
-```
->>> Person.objects.all()
-```
-11. Add a record to the table, by executing these two lines:
-```
->>> person = Person(firstname='Write name', lastname='write surname', email='', jobTitle='')
->>> person.save()
-```
-12. Execute this command to see if the Member table got a person:
-```
->>> Person.objects.all().values()
-```
-13. add multiple records by making a list of Member objects, and execute .save() on each entry:
-```
->>> person1 = Person(firstname='name1', lastname='surname1', email='', jobtitle='')
->>> person2 = Person(firstname='name2', lastname='surname2', email='', jobtitle='')
->>> person3 = Person(firstname='name3', lastname='surname3', email='', jobtitle='')
->>> person4 = Person(firstname='name4', lastname='surname4', email='', jobtitle='')
->>> person5 = Person(firstname='name5', lastname='surname5', email='', jobtitle='')
->>> persons_list = [person1, person2, person3, person4, person5]
->>> for x in persons_list:
->>>   x.save()
-```
-14. make a migration to tell Django that it has to update the database:
-```
-py manage.py makemigrations persons
-```
-16. Create new View
+8. Create new View
 
 myapp/persons/views.py:
 ```
@@ -146,8 +106,57 @@ def details(request, id):
     }
     return HttpResponse(template.render(context, request))
 ```
+9. Add the model in the admin
+```
+from django.contrib import admin
+from .models import Person
 
-17. Create a template called master.html, with all the necessary HTML elements:
+# Register your models here.
+admin.site.register(Person)
+```
+
+10. make a migration to tell Django that it has to update the database:
+```
+py manage.py makemigrations persons
+```
+11. Run the migrate command:
+```
+python3 manage.py migrate
+```
+12. open a Python shell, type this command:
+```
+python3 manage.py shell
+```
+13. At the bottom, after the three >>> write the following:
+```
+>>> from persons.models import Person
+```
+14. Hit [enter] and write this to look at the empty Member table:
+```
+>>> Person.objects.all()
+```
+15. Add a record to the table, by executing these two lines:
+```
+>>> person = Person(firstname='Write name', lastname='write surname', email='', jobTitle='')
+>>> person.save()
+```
+16. Execute this command to see if the Member table got a person:
+```
+>>> Person.objects.all().values()
+```
+17. add multiple records by making a list of Member objects, and execute .save() on each entry:
+```
+>>> person1 = Person(firstname='name1', lastname='surname1', email='', jobtitle='')
+>>> person2 = Person(firstname='name2', lastname='surname2', email='', jobtitle='')
+>>> person3 = Person(firstname='name3', lastname='surname3', email='', jobtitle='')
+>>> person4 = Person(firstname='name4', lastname='surname4', email='', jobtitle='')
+>>> person5 = Person(firstname='name5', lastname='surname5', email='', jobtitle='')
+>>> persons_list = [person1, person2, person3, person4, person5]
+>>> for x in persons_list:
+>>>   x.save()
+```
+
+18. Create the templates:
 
 myapp/persons/templates/master.html
 ```
@@ -164,7 +173,7 @@ myapp/persons/templates/master.html
 </body>
 </html>
 ```
-18. Include the master template with the {% extends %} tag, and inserting a title block and a content block:
+19. Include the master template with the {% extends %} tag, and inserting a title block and a content block:
 
 myapp/persons/templates/persons.html:
 ```
@@ -185,7 +194,7 @@ My App - List of all persons
 </ul>
 {% endblock %}
 ```
-19. myapp/persons/template/details.html
+20. myapp/persons/template/details.html
 ```
 {% extends "master.html" %}
 
@@ -204,7 +213,7 @@ Details about {{ person.firstname }} {{ person.lastname }}
 
 {% endblock %}
 ```
-20. Create a template called main.html
+21. Create a template called main.html
 
 myapp/persons/template/main.html:
 ```
@@ -224,4 +233,19 @@ My Tennis Club
 
 {% endblock %}
 ```
+22. Create User 
+```
+python3 manage.py createsuperuser
+```
+23. Run the server 
+```
+python3 manage.py runserver
+```
+24. 
+<table>
+  <tr>
+    <td><img src="screenshots/login.png" alt="login" width="200px"></td>
+    <td><img src="screenshots/admin.png" alt="admin" width="200px"></td>
+  </tr>
+</table>
 
