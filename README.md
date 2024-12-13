@@ -60,7 +60,7 @@ The file structure should be like this:
     my_tennis_club
         manage.py
         my_tennis_club/
-        members/
+        persons/
             templates/
                 myfirst.html
 ```
@@ -86,8 +86,8 @@ myapp/persons/views.py:
     from django.template import loader
 
     def persons(request):
-    template = loader.get_template('myfirst.html')
-    return HttpResponse(template.render())
+        template = loader.get_template('myfirst.html')
+        return HttpResponse(template.render())
 ```
 10. add the members app like this:
 
@@ -131,11 +131,11 @@ Run the migrate command:
 ```
 15. run this command, with the migration number:
 ```
-    py manage.py sqlmigrate members 0001
+    python3 manage.py sqlmigrate members 0001
 ```
 16. open a Python shell, type this command:
 ```
-    py manage.py shell
+    python3 manage.py shell
 ```
 17. At the bottom, after the three >>> write the following:
 ```
@@ -185,3 +185,191 @@ myapp/persons/models.py:
 ```
     py manage.py migrate
 ```
+25. Create an HTML file named persons.html and place it in the /templates/ folder:
+
+myapp/persons/templates/persons.html
+```
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Persons</h1>
+  
+<ul>
+  {% for x in persons %}
+    <li>{{ x.firstname }} {{ x.lastname }}</li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>
+```
+26. Import the Person model, and send it to the template like this:
+
+myapp/persons/views.py:
+```
+from django.http import HttpResponse
+from django.template import loader
+from .models import Person
+
+def persons(request):
+  persons = Person.objects.all().values()
+  template = loader.get_template('persons.html')
+  context = {
+    'persons': persons,
+  }
+  return HttpResponse(template.render(context, request))
+```
+27. creating a new template called details.html:
+
+myapp/persons/templates/details.html
+```
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<h1>{{ person.firstname }} {{ person.lastname }}</h1>
+  
+<p>Phone: {{ person.phone }}</p>
+<p>Job title: {{ person.joined_date }}</p>
+
+<p>Back to <a href="/persons">Persons</a></p>
+
+</body>
+</html>
+```
+28. Add link in all-memebers template
+
+myapp/persons/templates/all_members.html:
+```
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Persons</h1>
+  
+<ul>
+  {% for x in persons %}
+    <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>
+```
+29. Create new View
+
+myapp/persons/views.py:
+```
+from django.http import HttpResponse
+from django.template import loader
+from .models import Person
+
+def persons(request):
+  persons = Person.objects.all().values()
+  template = loader.get_template('persons.html')
+  context = {
+    'persons': persons,
+  }
+  return HttpResponse(template.render(context, request))
+  
+def details(request, id):
+  person = Person.objects.get(id=id)
+  template = loader.get_template('details.html')
+  context = {
+    'person': person,
+  }
+  return HttpResponse(template.render(context, request))
+```
+30. Open the urls.py file and add the details view to the urlpatterns list:
+
+myapp/persons/urls.py:
+```
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('persons/', views.persons, name='persons'),
+    path('persons/details/<int:id>', views.details, name='details'),
+
+]
+```
+31. Create a template called master.html, with all the necessary HTML elements:
+
+myapp/persons/templates/master.html
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
+```
+32. Include the master template with the {% extends %} tag, and inserting a title block and a content block:
+
+myapp/persons/templates/persons.html:
+```
+{% extends "master.html" %}
+
+{% block title %}
+  My App - List of all persons
+{% endblock %}
+
+
+{% block content %}
+  <h1>Persons</h1>
+  
+  <ul>
+    {% for x in persons %}
+      <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+```
+33. myapp/persons/template/details.html
+```
+{% extends "master.html" %}
+
+{% block title %}
+  Details about {{ person.firstname }} {{ person.lastname }}
+{% endblock %}
+
+
+{% block content %}
+  <h1>{{ person.firstname }} {{ person.lastname }}</h1>
+  
+  <p>Phone {{ mymember.phone }}</p>
+  <p>Job Title: {{ person.jobTitle }}</p>
+  
+  <p>Back to <a href="/persons">Persons</a></p>
+  
+{% endblock %}
+```
+34. Create a template called main.html
+
+myapp/persons/template/main.html:
+```
+{% extends "master.html" %}
+
+{% block title %}
+  My Tennis Club
+{% endblock %}
+
+
+{% block content %}
+  <h1>My Tennis Club</h1>
+
+  <h3>Members</h3>
+  
+  <p>Check out all our <a href="members/">members</a></p>
+  
+{% endblock %}
+```
+
