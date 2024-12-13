@@ -56,7 +56,7 @@ def details(request, id):
     }
     return HttpResponse(template.render(context, request))
 ```
-6. add the members app like this:
+6. add the persons app:
 
 myapp/myapp/settings.py:
 ```
@@ -70,6 +70,10 @@ INSTALLED_APPS = [
     'persons'
 ]
 ```
+8. Run the migrate command:
+```
+python3 manage.py migrate
+```
 7. create a model, navigate to the models.py file in the /persons/ folder.
 
 myapp/persons/models.py:
@@ -82,11 +86,11 @@ class Person(models.Model):
     email = models.CharField(max_length=255)
     jobTitle = models.CharField(max_length=255)
 ```
-8. open a Python shell, type this command:
+10. open a Python shell, type this command:
 ```
 python3 manage.py shell
 ```
-9. At the bottom, after the three >>> write the following:
+11. At the bottom, after the three >>> write the following:
 ```
 >>> from persons.models import Person
 ```
@@ -114,16 +118,10 @@ python3 manage.py shell
 >>> for x in persons_list:
 >>>   x.save()
 ```
-
 14. make a migration to tell Django that it has to update the database:
 ```
 py manage.py makemigrations persons
 ```
-15. Run the migrate command:
-```
-py manage.py migrate
-```
-
 16. Create new View
 
 myapp/persons/views.py:
