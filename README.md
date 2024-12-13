@@ -12,7 +12,7 @@
    chmod +x run.sh
    ./run.sh
 
-3. **Run the server
+3. **Run the server:**
 
    ```bash
    python manage.py runserver
@@ -20,6 +20,7 @@
 
 4. Django creates a folder named persons in my project, with this content:
 
+```
 myapp
     manage.py
     myapp/
@@ -32,6 +33,7 @@ myapp
         models.py
         tests.py
         views.py
+```
 
 5. There is a views.py in your persons folder. Find it and open it, and replace the content with this:
 
