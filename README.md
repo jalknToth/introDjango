@@ -22,11 +22,7 @@ urlpatterns = [
 
 ]
 ```
-4. There is a file called urls.py on the myapp, open that file and add the include module in the import statement, and also add a path() function in the urlpatterns[] list, with arguments that will route users that comes in via 127.0.0.1:8000/.
-
-Then your file will look like this:
-
-myapp/myapp/urls.py:
+4. myapp/myapp/urls.py:
 ```
 from django.contrib import admin
 from django.urls import include, path
