@@ -21,7 +21,7 @@ EOL
 main() {
     echo -e "${YELLOW}🔧 Audio Recognition Application Initialization${NC}"
 
-    touch .gitignore
+    touch .gitignore .env
     gitignore
 
     python3 -m venv .venv
@@ -31,18 +31,15 @@ main() {
     pip install django
 
     #start a project named app
-    django-admin startproject 'app'
+    django-admin startproject 'myapp'
 
     #change directory to app
-    cd app
+    cd myapp
 
     #start new app named myapp
-    python3 manage.py startapp members
+    python3 manage.py startapp persons
 
-    #run the server
-    python3 manage.py runserver
-
-    echo -e "${GREEN}🎉 Project is ready! to start.${NC}"
+    echo -e "${GREEN}🎉 Project is ready! run 'python manage.py runserver' to start.${NC}"
 }
 
 main
