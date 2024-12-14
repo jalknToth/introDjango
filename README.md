@@ -61,7 +61,7 @@ class Person(models.Model):
     email = models.CharField(max_length=255)
     jobTitle = models.CharField(max_length=255)
 ```
-8. **Create views in persons app**
+7. **Create views in persons app**
 
 myapp/persons/views.py:
 ```
@@ -96,7 +96,7 @@ def testing(request):
     }
     return HttpResponse(template.render(context, request))
 ```
-9. **Add the model in the admin.py**
+8. **Add the model in the admin.py**
 ```
 from django.contrib import admin
 from .models import Person
@@ -107,33 +107,33 @@ class PersonAdmin(admin.ModelAdmin):
 admin.site.register(Person, PersonAdmin)
 ```
 
-10. **Update the database**
+9. **Update the database**
 ```
 cd myapp
 python3 manage.py makemigrations persons
 ```
-11. **Run the migrate command**
+10. **Run the migrate command**
 ```
 python3 manage.py migrate
 ```
-12. **open a Python shell**
+11. **open a Python shell**
 ```
 python3 manage.py shell
 ```
-13. **Import Person class**
+12. **Import Person class**
 ```
 >>> from persons.models import Person
 ```
-14. **Add a record to the table**
+13. **Add a record to the table**
 ```
 >>> person = Person(firstname='Write name', lastname='write surname', email='', jobTitle='')
 >>> person.save()
 ```
-16. **See if the Person table got a person**
+14. **See if the Person table got a person**
 ```
 >>> Person.objects.all().values()
 ```
-17. **Add multiple records by making a list**
+15. **Add multiple records by making a list**
 ```
 >>> person1 = Person(firstname='name1', lastname='surname1', email='', jobtitle='')
 >>> person2 = Person(firstname='name2', lastname='surname2', email='', jobtitle='')
@@ -145,7 +145,7 @@ python3 manage.py shell
 >>>   x.save()
 ```
 
-18. **Create the templates**
+16. **Create the templates**
 
 myapp/persons/templates/master.html
 ```
@@ -162,7 +162,7 @@ myapp/persons/templates/master.html
 </body>
 </html>
 ```
-19. **Create Persons template**
+17. **Create Persons template**
 
 myapp/persons/templates/persons.html:
 ```
@@ -186,7 +186,7 @@ myapp/persons/templates/persons.html:
   </ul>
 {% endblock %}
 ```
-20. **Create details template**
+18. **Create details template**
 
 myapp/persons/template/details.html
 ```
@@ -207,7 +207,7 @@ Details about {{ person.firstname }} {{ person.lastname }}
 
 {% endblock %}
 ```
-21. **Create main template**
+19. **Create main template**
 
 myapp/persons/template/main.html:
 ```
@@ -227,7 +227,7 @@ My app
 
 {% endblock %}
 ```
-22. **Create 404 error**
+20. **Create 404 error**
 ```
 <!DOCTYPE html>
 <html>
@@ -241,21 +241,21 @@ My app
 </body>
 </html>
 ```
-23. **Change this lines in settings.py**
+21. **Change this lines in settings.py**
 ```
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 ```
-24. **Create an User **
+22. **Create an User**
 ```
 python3 manage.py createsuperuser
 ```
-25. **Run the server **
+23. **Run the server**
 ```
 python3 manage.py runserver
 ```
-26. open 127.0.0.1:8000/admin/
+24. open 127.0.0.1:8000/admin/
 <table>
   <tr>
     <td><img src="screenshots/login.png" alt="login" width="200px"></td>
