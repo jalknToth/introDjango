@@ -9,7 +9,7 @@ git clone https://github.com/jalknToth/introDjango.git
 chmod +x run.sh
 ./run.sh
 ```
-3. **Create a file named urls.py** in the same folder as the views.py file, and type this code in it:
+3. **Create urls in persons app**
 
 myapp/persons/urls.py:
 ```
@@ -22,41 +22,20 @@ urlpatterns = [
 
 ]
 ```
-4. myapp/myapp/urls.py:
+4. **Create urls in myapp**
+
+myapp/myapp/urls.py:
 ```
-from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', include('persons.urls')),
-    path('admin/', admin.site.urls),
+    path('', views.main, name='main'),
+    path('persons/', views.persons, name='persons'),
+    path('persons/details/<int:id>', views.details, name='details'),
 ]
 ```
-5. Create new View
-
-myapp/persons/views.py:
-```
-from django.http import HttpResponse
-from django.template import loader
-from .models import Person
-
-def persons(request):
-    persons = Person.objects.all().values()
-    template = loader.get_template('persons.html')
-    context = {
-    'persons': persons,
-    }
-    return HttpResponse(template.render(context, request))
-
-def details(request, id):
-    person = Person.objects.get(id=id)
-    template = loader.get_template('details.html')
-    context = {
-    'person': person,
-    }
-    return HttpResponse(template.render(context, request))
-```
-6. add the persons app:
+5. **Add the persons app in settings.py**
 
 myapp/myapp/settings.py:
 ```
@@ -70,7 +49,7 @@ INSTALLED_APPS = [
     'persons'
 ]
 ```
-7. create a model, navigate to the models.py file in the /persons/ folder.
+6. **Create models in persons app**
 
 myapp/persons/models.py:
 ```
@@ -82,7 +61,7 @@ class Person(models.Model):
     email = models.CharField(max_length=255)
     jobTitle = models.CharField(max_length=255)
 ```
-8. Create new View
+8. **Create views in persons app**
 
 myapp/persons/views.py:
 ```
@@ -94,7 +73,7 @@ def persons(request):
     persons = Person.objects.all().values()
     template = loader.get_template('persons.html')
     context = {
-    'persons': persons,
+        'persons': persons,
     }
     return HttpResponse(template.render(context, request))
 
@@ -102,49 +81,59 @@ def details(request, id):
     person = Person.objects.get(id=id)
     template = loader.get_template('details.html')
     context = {
-    'person': person,
+        'person': person,
+    }
+    return HttpResponse(template.render(context, request))
+
+def main(request):
+    template = loader.get_template('main.html')
+    return HttpResponse(template.render())
+
+def testing(request):
+    template = loader.get_template('template.html')
+    context = {
+        'fruits': ['Black', 'White', 'Yellow'],   
     }
     return HttpResponse(template.render(context, request))
 ```
-9. Add the model in the admin
+9. **Add the model in the admin.py**
 ```
 from django.contrib import admin
 from .models import Person
 
-# Register your models here.
-admin.site.register(Person)
+class PersonAdmin(admin.ModelAdmin):
+  list_display = ("firstname", "lastname", "jobTitle",)
+  
+admin.site.register(Person, PersonAdmin)
 ```
 
-10. make a migration to tell Django that it has to update the database:
+10. **Update the database**
 ```
-py manage.py makemigrations persons
+cd myapp
+python3 manage.py makemigrations persons
 ```
-11. Run the migrate command:
+11. **Run the migrate command**
 ```
 python3 manage.py migrate
 ```
-12. open a Python shell, type this command:
+12. **open a Python shell**
 ```
 python3 manage.py shell
 ```
-13. At the bottom, after the three >>> write the following:
+13. **Import Person class**
 ```
 >>> from persons.models import Person
 ```
-14. Hit [enter] and write this to look at the empty Member table:
-```
->>> Person.objects.all()
-```
-15. Add a record to the table, by executing these two lines:
+14. **Add a record to the table**
 ```
 >>> person = Person(firstname='Write name', lastname='write surname', email='', jobTitle='')
 >>> person.save()
 ```
-16. Execute this command to see if the Member table got a person:
+16. **See if the Person table got a person**
 ```
 >>> Person.objects.all().values()
 ```
-17. add multiple records by making a list of Member objects, and execute .save() on each entry:
+17. **Add multiple records by making a list**
 ```
 >>> person1 = Person(firstname='name1', lastname='surname1', email='', jobtitle='')
 >>> person2 = Person(firstname='name2', lastname='surname2', email='', jobtitle='')
@@ -156,7 +145,7 @@ python3 manage.py shell
 >>>   x.save()
 ```
 
-18. Create the templates:
+18. **Create the templates**
 
 myapp/persons/templates/master.html
 ```
@@ -173,28 +162,33 @@ myapp/persons/templates/master.html
 </body>
 </html>
 ```
-19. Include the master template with the {% extends %} tag, and inserting a title block and a content block:
+19. **Create Persons template**
 
 myapp/persons/templates/persons.html:
 ```
 {% extends "master.html" %}
 
 {% block title %}
-My App - List of all persons
+  My app - List of all persons
 {% endblock %}
 
 
 {% block content %}
-<h1>Persons</h1>
 
-<ul>
-{% for x in persons %}
-    <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
-{% endfor %}
-</ul>
+  <p><a href="/">HOME</a></p>
+
+  <h1>persons</h1>
+  
+  <ul>
+    {% for x in persons %}
+      <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
+    {% endfor %}
+  </ul>
 {% endblock %}
 ```
-20. myapp/persons/template/details.html
+20. **Create details template**
+
+myapp/persons/template/details.html
 ```
 {% extends "master.html" %}
 
@@ -206,42 +200,62 @@ Details about {{ person.firstname }} {{ person.lastname }}
 {% block content %}
 <h1>{{ person.firstname }} {{ person.lastname }}</h1>
 
-<p>Phone {{ mymember.phone }}</p>
+<p>Phone {{ person.phone }}</p>
 <p>Job Title: {{ person.jobTitle }}</p>
 
 <p>Back to <a href="/persons">Persons</a></p>
 
 {% endblock %}
 ```
-21. Create a template called main.html
+21. **Create main template**
 
 myapp/persons/template/main.html:
 ```
 {% extends "master.html" %}
 
 {% block title %}
-My Tennis Club
+My app
 {% endblock %}
 
 
 {% block content %}
-<h1>My Tennis Club</h1>
+<h1>My app</h1>
 
-<h3>Members</h3>
+<h3>Persons</h3>
 
-<p>Check out all our <a href="members/">members</a></p>
+<p>Check out all our <a href="persons/">persons</a></p>
 
 {% endblock %}
 ```
-22. Create User 
+22. **Create 404 error**
+```
+<!DOCTYPE html>
+<html>
+<title>Wrong address</title>
+<body>
+
+<h1>Ooops!</h1>
+
+<h2>I cannot find the file you requested!</h2>
+
+</body>
+</html>
+```
+23. **Change this lines in settings.py**
+```
+DEBUG = False
+
+ALLOWED_HOSTS = ['*']
+```
+24. **Create an User **
 ```
 python3 manage.py createsuperuser
 ```
-23. Run the server 
+25. **Run the server **
 ```
 python3 manage.py runserver
 ```
-24. 
+26. open 127.0.0.1:8000/admin/
 <table>
   <tr>
     <td><img src="screenshots/login.png" alt="login" width="200px"></td>

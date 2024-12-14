@@ -28,7 +28,7 @@ main() {
     source .venv/bin/activate
     pip install --upgrade pip setuptools wheel
     pip install --upgrade pip
-    pip install django
+    pip install django whitenoise django-bootstrap-v5
 
     #start a project named app
     django-admin startproject 'myapp'
