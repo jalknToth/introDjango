@@ -1,3 +1,5 @@
+#!/bin/bash
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
@@ -30,13 +32,13 @@ main() {
     pip install --upgrade pip
     pip install django whitenoise django-bootstrap-v5
 
-    #start a project named app
-    django-admin startproject 'myapp'
+    #start Django project
+    django-admin startproject myapp
 
-    #change directory to app
+    #change directory
     cd myapp
 
-    #start new app named myapp
+    #start new app
     python3 manage.py startapp persons
 
     echo -e "${GREEN}🎉 Project is ready! run 'python manage.py runserver' to start.${NC}"
